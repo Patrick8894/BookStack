@@ -27,6 +27,15 @@ This project is in the **early design stage**. Notes here capture the core ideas
 
 ---
 
+## 🚀 Planned Extensions (Future Work)
+- Reservation / Hold requests  
+- Overdue fine calculation  
+- Email/SMS notifications  
+- Reports & analytics  
+- QR/Barcode support  
+
+---
+
 ## 🛠 Tech Stack
 
 - **Frontend**: Vue 3 (composition API, Pinia or Vuex for state, Apollo for GraphQL)
