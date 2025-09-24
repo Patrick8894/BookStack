@@ -6,9 +6,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import com.bookstack.bookstack.auth.repository.UserRepository;
-import com.bookstack.bookstack.common.exception.BadRequestException;
-import com.bookstack.bookstack.common.exception.ConflictException;
 import com.bookstack.bookstack.common.exception.NotFoundException;
 
 @Service

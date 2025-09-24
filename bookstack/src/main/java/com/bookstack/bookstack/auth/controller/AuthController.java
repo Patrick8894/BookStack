@@ -16,7 +16,7 @@ import com.bookstack.bookstack.auth.dto.RegisterRequest;
 import com.bookstack.bookstack.auth.service.AuthService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
 

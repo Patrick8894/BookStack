@@ -7,7 +7,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.bookstack.bookstack.auth.model.User;
+import com.bookstack.bookstack.user.model.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -29,7 +29,6 @@ public class JwtService {
 
     public String generateToken(User user) {
         System.out.println("Generating token for user: " + user.getUsername() + " with role: " + user.getRole());
-        // return "dummy-token-for-" + user.getUsername();
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .claim("role", user.getRole())
