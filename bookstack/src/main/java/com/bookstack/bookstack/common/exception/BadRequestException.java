@@ -2,8 +2,8 @@ package com.bookstack.bookstack.common.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BadRequestException extends HttpException {
+public class BadRequestException extends BaseException {
     public BadRequestException(String message) {
-        super(HttpStatus.BAD_REQUEST, message);
+        super(message, HttpStatus.BAD_REQUEST);
     }
 }

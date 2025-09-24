@@ -2,8 +2,8 @@ package com.bookstack.bookstack.common.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class UnauthorizedException extends HttpException {
+public class UnauthorizedException extends BaseException {
     public UnauthorizedException(String message) {
-        super(HttpStatus.UNAUTHORIZED, message);
+        super(message, HttpStatus.UNAUTHORIZED);
     }
 }

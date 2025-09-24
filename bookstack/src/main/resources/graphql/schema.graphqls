@@ -1,0 +1,37 @@
+# Book type definition
+type Book {
+    id: ID!
+    title: String!
+    author: String!
+    isbn: String!
+    category: String
+    language: String
+    totalCopies: Int!
+    availableCopies: Int!
+}
+
+# Input type for creating/updating books
+input BookInput {
+    title: String!
+    author: String!
+    isbn: String!
+    category: String
+    language: String
+    totalCopies: Int!
+    availableCopies: Int!
+}
+
+# Root Query type
+type Query {
+    hello: String
+    allBooks: [Book!]!
+    bookById(id: ID!): Book
+    searchBooks(title: String, author: String, category: String): [Book!]!
+}
+
+# Root Mutation type
+type Mutation {
+    addBook(input: BookInput!): Book!
+    updateBook(id: ID!, input: BookInput!): Book!
+    deleteBook(id: ID!): Boolean!
+}

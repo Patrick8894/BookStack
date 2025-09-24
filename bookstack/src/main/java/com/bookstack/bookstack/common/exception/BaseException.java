@@ -1,0 +1,21 @@
+package com.bookstack.bookstack.common.exception;
+
+import org.springframework.http.HttpStatus;
+
+public abstract class BaseException extends RuntimeException {
+    protected final HttpStatus status;
+    
+    public BaseException(String message, HttpStatus status) {
+        super(message);
+        this.status = status;
+    }
+    
+    public BaseException(String message, HttpStatus status, Throwable cause) {
+        super(message, cause);
+        this.status = status;
+    }
+    
+    public HttpStatus getStatus() {
+        return status;
+    }
+}

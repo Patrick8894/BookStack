@@ -2,8 +2,8 @@ package com.bookstack.bookstack.common.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class NotFoundException extends HttpException {
+public class NotFoundException extends BaseException {
     public NotFoundException(String message) {
-        super(HttpStatus.NOT_FOUND, message);
+        super(message, HttpStatus.NOT_FOUND);
     }
 }

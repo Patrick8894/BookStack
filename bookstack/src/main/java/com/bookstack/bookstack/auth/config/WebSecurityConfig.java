@@ -2,6 +2,7 @@ package com.bookstack.bookstack.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -12,7 +13,8 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 public class WebSecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Profile("!dev") // This bean is active when NOT in dev profile
+    public SecurityFilterChain securedFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)  // Modern way to disable CSRF
             .exceptionHandling(exc -> exc
@@ -28,6 +30,17 @@ public class WebSecurityConfig {
                     "/graphiql/**"
                 ).permitAll()  // public: register & login
                 .anyRequest().authenticated()            // everything else requires JWT
+            );
+        return http.build();
+    }
+
+    @Bean
+    @Profile("dev") // This bean is only active in dev profile
+    public SecurityFilterChain unsecuredFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().permitAll() // Allow all requests without authentication
             );
         return http.build();
     }
