@@ -5,9 +5,11 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.bookstack.bookstack.common.exception.BaseException;
 
@@ -44,9 +46,38 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    // Handle HTTP method not supported
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(Map.of(
+                        "status", HttpStatus.METHOD_NOT_ALLOWED.value(),
+                        "error", HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(),
+                        "message", ex.getMessage(),
+                        "supportedMethods", ex.getSupportedHttpMethods(),
+                        "timestamp", System.currentTimeMillis()
+                ));
+    }
+
+    // Handle resource not found (like favicon.ico)
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNoResourceFound(NoResourceFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "status", HttpStatus.NOT_FOUND.value(),
+                        "error", HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        "message", "Resource not found: " + ex.getResourcePath(),
+                        "path", ex.getResourcePath(),
+                        "timestamp", System.currentTimeMillis()
+                ));
+    }
+
     // Fallback for unhandled errors
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
+        System.err.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.err.println("Unhandled exception: " + ex.getClass().getName() + " - " + ex.getMessage());
+        ex.printStackTrace(); // Add stack trace for better debugging
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of(
                         "status", 500,

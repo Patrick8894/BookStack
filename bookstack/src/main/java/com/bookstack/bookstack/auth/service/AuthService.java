@@ -20,8 +20,8 @@ public class AuthService {
         this.userService = userService;
     }
 
-    public User register(String username, String password, String role) {
-        return userService.createUser(username, password, role);
+    public User register(String username, String password) {
+        return userService.createUser(username, password, "MEMBER");
     }
 
     public String login(String username, String password) {

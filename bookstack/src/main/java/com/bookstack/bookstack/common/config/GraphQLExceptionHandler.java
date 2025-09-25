@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.graphql.execution.ErrorType;
 import org.springframework.stereotype.Component;
+import org.springframework.lang.NonNull;
 
 import com.bookstack.bookstack.common.exception.BaseException;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class GraphQLExceptionHandler extends DataFetcherExceptionResolverAdapter {
 
     @Override
-    protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env) {
+    protected GraphQLError resolveToSingleError(@NonNull Throwable ex, @NonNull DataFetchingEnvironment env) {
 
         System.out.println("GraphQLExceptionHandler: " + ex.getClass().getName() + " - " + ex.getMessage());
         

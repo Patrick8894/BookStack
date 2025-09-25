@@ -1,5 +1,6 @@
 package com.bookstack.bookstack.book.controller;
 
+import com.bookstack.bookstack.auth.annotation.RequireRole;
 import com.bookstack.bookstack.book.dto.BookInput;
 import com.bookstack.bookstack.book.model.Book;
 import com.bookstack.bookstack.book.service.BookService;
@@ -19,25 +20,29 @@ public class BookGraphQLController {
         this.bookService = bookService;
     }
 
-    // Queries
+    // Queries - Allow all authenticated users to view books
     @QueryMapping
+    @RequireRole({"MEMBER", "LIBRARIAN", "ADMIN"})
     public List<Book> allBooks() {
         return bookService.getAllBooks();
     }
 
     @QueryMapping
+    @RequireRole({"MEMBER", "LIBRARIAN", "ADMIN"})
     public Book bookById(@Argument Long id) {
-        return bookService.getBookById(id).orElse(null);
+        return bookService.getBookById(id);
     }
 
     @QueryMapping
+    @RequireRole({"MEMBER", "LIBRARIAN", "ADMIN"})
     public List<Book> searchBooks(@Argument String title, @Argument String author, @Argument String category) {
         return bookService.searchBooks(title, author, category);
     }
 
-    // Mutations
+    // Mutations - Only librarians and admins can modify book data
     @MutationMapping
-    public Book addBook(@Argument  @Valid BookInput input) {
+    @RequireRole({"LIBRARIAN", "ADMIN"})
+    public Book addBook(@Argument @Valid BookInput input) {
         Book book = new Book();
         book.setTitle(input.getTitle());
         book.setAuthor(input.getAuthor());
@@ -50,6 +55,7 @@ public class BookGraphQLController {
     }
 
     @MutationMapping
+    @RequireRole({"LIBRARIAN", "ADMIN"})
     public Book updateBook(@Argument Long id, @Argument BookInput input) {
         Book updated = new Book();
         updated.setTitle(input.getTitle());
@@ -63,6 +69,7 @@ public class BookGraphQLController {
     }
 
     @MutationMapping
+    @RequireRole({"ADMIN"})
     public Boolean deleteBook(@Argument Long id) {
         bookService.deleteBook(id);
         return true;

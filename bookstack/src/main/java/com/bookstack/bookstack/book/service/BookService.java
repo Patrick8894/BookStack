@@ -4,7 +4,6 @@ import com.bookstack.bookstack.book.model.Book;
 import com.bookstack.bookstack.book.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 import com.bookstack.bookstack.common.exception.NotFoundException;
 
@@ -20,8 +19,9 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Optional<Book> getBookById(Long id) {
-        return bookRepository.findById(id);
+    public Book getBookById(Long id) {
+        return bookRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Book not found with id: " + id));
     }
 
     public Book addBook(Book book) {

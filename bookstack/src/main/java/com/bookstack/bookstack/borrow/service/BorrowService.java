@@ -31,8 +31,7 @@ public class BorrowService {
 
     public Borrow borrowBook(Long userId, Long bookId, String notes) {
         User user = userService.getUserById(userId);
-        Book book = bookService.getBookById(bookId)
-            .orElseThrow(() -> new NotFoundException("Book not found with id: " + bookId));
+        Book book = bookService.getBookById(bookId);
         
         // Check if book is available
         if (book.getAvailableCopies() <= 0) {

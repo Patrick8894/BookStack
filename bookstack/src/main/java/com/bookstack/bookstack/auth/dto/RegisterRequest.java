@@ -15,7 +15,4 @@ public class RegisterRequest {
     @NotBlank(message = "Password is required")
     @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
     private String password;
-    
-    @Pattern(regexp = "^(ADMIN|LIBRARIAN|MEMBER)$", message = "Role must be ADMIN, LIBRARIAN, or MEMBER")
-    private String role; // Optional, will default to MEMBER if not provided
 }
