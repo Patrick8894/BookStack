@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: bookstack-backend-dev
+    ports:
+      - "8080:8080"
+      - "35729:35729"  # For LiveReload
+    volumes:
+      - ./backend:/app
+      - ~/.m2:/root/.m2
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bookstack
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - JWT_SECRET=QWERTYUIOPASDFGHJKLZXCVBNM1234567890ouhnqlncfqincw
+      - JWT_EXPIRATION=86400000
+    depends_on:
+      - db
+    networks:
+      - bookstack-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: bookstack-frontend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NUXT_PUBLIC_API_URL=http://localhost:8080/api
+    networks:
+      - bookstack-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: bookstack-db-dev
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=bookstack
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - bookstack-network
+
+networks:
+  bookstack-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

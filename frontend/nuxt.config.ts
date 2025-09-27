@@ -1,5 +1,30 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import vuetify from 'vite-plugin-vuetify'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true }
+  devtools: { enabled: true },
+  modules: [
+    '@pinia/nuxt',
+  ],
+  build: {
+    transpile: ['vuetify'],
+  },
+  css: ['vuetify/styles'],
+
+  // Use vite-plugin-vuetify
+  hooks: {
+    'vite:extendConfig': (config) => {
+      if (!config.plugins) config.plugins = []
+      config.plugins.push(vuetify())
+    },
+  },
+  runtimeConfig: {
+    // Private keys (server only)
+    
+    // Public keys that are exposed to the client
+    public: {
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:8080/api'
+    }
+  }
 })
