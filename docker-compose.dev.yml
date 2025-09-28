@@ -20,6 +20,8 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - JWT_SECRET=QWERTYUIOPASDFGHJKLZXCVBNM1234567890ouhnqlncfqincw
       - JWT_EXPIRATION=86400000
+      - RATE_LIMIT_ENABLED=true
+      - RATE_LIMIT_REQUESTS_PER_MINUTE=20
     depends_on:
       - db
     networks:
