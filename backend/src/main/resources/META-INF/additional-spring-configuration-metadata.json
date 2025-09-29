@@ -1,0 +1,59 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT secret key"
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "JWT expiration time in milliseconds"
+    },
+    {
+      "name": "rate.limit.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable rate limiting"
+    },
+    {
+      "name": "rate.limit.requests-per-minute",
+      "type": "java.lang.Integer",
+      "description": "Rate limit requests per minute"
+    },
+    {
+      "name": "app.load-mock-data",
+      "type": "java.lang.Boolean",
+      "description": "Load mock data on startup"
+    },
+    {
+      "name": "spring.web.cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Custom CORS allowed origins configuration"
+    },
+    {
+      "name": "spring.web.cors.allowed-methods",
+      "type": "java.lang.String",
+      "description": "Custom CORS allowed methods configuration"
+    },
+    {
+      "name": "spring.web.cors.allowed-headers",
+      "type": "java.lang.String",
+      "description": "Custom CORS allowed headers configuration"
+    },
+    {
+      "name": "spring.web.cors.exposed-headers",
+      "type": "java.lang.String",
+      "description": "Custom CORS exposed headers configuration"
+    },
+    {
+      "name": "spring.web.cors.allow-credentials",
+      "type": "java.lang.Boolean",
+      "description": "Custom CORS allow credentials configuration"
+    },
+    {
+      "name": "spring.web.cors.max-age",
+      "type": "java.lang.Long",
+      "description": "Custom CORS max age configuration"
+    }
+  ]
+}
