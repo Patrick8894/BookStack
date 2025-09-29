@@ -5,6 +5,15 @@ type Query {
     allBooks: [Book!]!
     bookById(id: ID!): Book
     searchBooks(title: String, author: String, category: String): [Book!]!
+    allBooksIncludingDeleted: [Book!]!
+    deletedBooks: [Book!]!
+    availableBooks: [Book!]!
+    bookByIdIncludingDeleted(id: ID!): Book
+    bookByIsbn(isbn: String!): Book
+    booksByTitle(title: String!): [Book!]!
+    booksByAuthor(author: String!): [Book!]!
+    booksByCategory(category: String!): [Book!]!
+    booksByLanguage(language: String!): [Book!]!
     
     # User queries
     allUsers: [User!]!
@@ -12,6 +21,9 @@ type Query {
     userByUsername(username: String!): User
     searchUsersByUsername(username: String!): [User!]!
     usersByRole(role: String!): [User!]!
+    allUsersIncludingDeleted: [User!]!
+    deletedUsers: [User!]!
+    userByIdIncludingDeleted(id: ID!): User
 }
 
 type Mutation {
@@ -19,6 +31,9 @@ type Mutation {
     addBook(input: BookInput!): Book!
     updateBook(id: ID!, input: BookInput!): Book!
     deleteBook(id: ID!): Boolean!
+    updateBookAvailability(id: ID!, totalCopies: Int!, availableCopies: Int!): Book!
+    hardDeleteBook(id: ID!): Boolean!
+    restoreBook(id: ID!): Book!
     
     # User mutations
     addUser(input: UserInput!): User!
@@ -26,6 +41,8 @@ type Mutation {
     updateUserRole(id: ID!, role: String!): User!
     updateUserPassword(id: ID!, password: String!): User!
     deleteUser(id: ID!): Boolean!
+    hardDeleteUser(id: ID!): Boolean!
+    restoreUser(id: ID!): User!
 }
 
 type Book {

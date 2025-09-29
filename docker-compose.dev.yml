@@ -12,16 +12,11 @@ services:
     volumes:
       - ./backend:/app
       - ~/.m2:/root/.m2
+    env_file:
+      - .env.dev
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bookstack
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - JWT_SECRET=QWERTYUIOPASDFGHJKLZXCVBNM1234567890ouhnqlncfqincw
-      - JWT_EXPIRATION=86400000
-      - RATE_LIMIT_ENABLED=true
-      - RATE_LIMIT_REQUESTS_PER_MINUTE=20
+      # Override database URL for Docker
+      - DB_URL=jdbc:postgresql://db:5432/bookstack
     depends_on:
       - db
     networks:
@@ -52,7 +47,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_dev:/var/lib/postgresql/data
     networks:
       - bookstack-network
 
@@ -61,4 +56,4 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
+  postgres_data_dev:

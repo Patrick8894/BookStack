@@ -6,15 +6,8 @@ services:
     container_name: bookstack-backend
     ports:
       - "8080:8080"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bookstack
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - JWT_SECRET=QWERTYUIOPASDFGHJKLZXCVBNM1234567890ouhnqlncfqincw
-      - JWT_EXPIRATION=86400000
-      - RATE_LIMIT_ENABLED=true
-      - RATE_LIMIT_REQUESTS_PER_MINUTE=20
+    env_file:
+      - .env.prod
     depends_on:
       - db
     networks:

@@ -3,14 +3,17 @@ import vuetify from 'vite-plugin-vuetify'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   modules: [
     '@pinia/nuxt',
   ],
   build: {
     transpile: ['vuetify'],
   },
-  css: ['vuetify/styles'],
+  css: [
+    'vuetify/styles',
+    '@mdi/font/css/materialdesignicons.css'
+  ],
 
   // Use vite-plugin-vuetify
   hooks: {

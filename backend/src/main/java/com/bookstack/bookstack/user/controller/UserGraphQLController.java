@@ -29,8 +29,26 @@ public class UserGraphQLController {
 
     @QueryMapping
     @RequireRole({"ADMIN"})
+    public List<User> allUsersIncludingDeleted() {
+        return userService.getAllUsersIncludingDeleted();
+    }
+
+    @QueryMapping
+    @RequireRole({"ADMIN"})
+    public List<User> deletedUsers() {
+        return userService.getDeletedUsers();
+    }
+
+    @QueryMapping
+    @RequireRole({"ADMIN"})
     public User userById(@Argument Long id) {
         return userService.getUserById(id);
+    }
+
+    @QueryMapping
+    @RequireRole({"ADMIN"})
+    public User userByIdIncludingDeleted(@Argument Long id) {
+        return userService.getUserByIdIncludingDeleted(id);
     }
 
     @QueryMapping
@@ -80,5 +98,18 @@ public class UserGraphQLController {
     public Boolean deleteUser(@Argument Long id) {
         userService.deleteUser(id);
         return true;
+    }
+
+    @MutationMapping
+    @RequireRole({"ADMIN"})
+    public Boolean hardDeleteUser(@Argument Long id) {
+        userService.hardDeleteUser(id);
+        return true;
+    }
+
+    @MutationMapping
+    @RequireRole({"ADMIN"})
+    public User restoreUser(@Argument Long id) {
+        return userService.restoreUser(id);
     }
 }

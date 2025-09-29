@@ -2,11 +2,15 @@ package com.bookstack.bookstack.borrow.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bookstack.bookstack.book.model.Book;
 import com.bookstack.bookstack.book.service.BookService;
+import com.bookstack.bookstack.borrow.dto.BorrowResponse;
+import com.bookstack.bookstack.borrow.mapper.BorrowMapper;
 import com.bookstack.bookstack.borrow.model.Borrow;
 import com.bookstack.bookstack.borrow.model.BorrowStatus;
 import com.bookstack.bookstack.borrow.repository.BorrowRepository;
@@ -16,20 +20,24 @@ import com.bookstack.bookstack.user.model.User;
 import com.bookstack.bookstack.user.service.UserService;
 
 @Service
+@Transactional
 public class BorrowService {
     private final BorrowRepository borrowRepository;
     private final UserService userService;
     private final BookService bookService;
+    private final BorrowMapper borrowMapper;
     
     private static final int DEFAULT_BORROW_DAYS = 14;
 
-    public BorrowService(BorrowRepository borrowRepository, UserService userService, BookService bookService) {
+    public BorrowService(BorrowRepository borrowRepository, UserService userService, 
+                        BookService bookService, BorrowMapper borrowMapper) {
         this.borrowRepository = borrowRepository;
         this.userService = userService;
         this.bookService = bookService;
+        this.borrowMapper = borrowMapper;
     }
 
-    public Borrow borrowBook(Long userId, Long bookId, String notes) {
+    public BorrowResponse borrowBook(Long userId, Long bookId, String notes) {
         User user = userService.getUserById(userId);
         Book book = bookService.getBookById(bookId);
         
@@ -54,11 +62,12 @@ public class BorrowService {
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         bookService.updateBook(bookId, book);
         
-        return borrowRepository.save(borrow);
+        Borrow savedBorrow = borrowRepository.save(borrow);
+        return borrowMapper.toResponse(savedBorrow);
     }
 
-    public Borrow returnBook(Long borrowId, String notes) {
-        Borrow borrow = getBorrowById(borrowId);
+    public BorrowResponse returnBook(Long borrowId, String notes) {
+        Borrow borrow = getBorrowEntityById(borrowId);
         
         if (borrow.getStatus() != BorrowStatus.ACTIVE) {
             throw new BadRequestException("Book is already returned");
@@ -75,36 +84,57 @@ public class BorrowService {
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         bookService.updateBook(book.getId(), book);
         
-        return borrowRepository.save(borrow);
+        Borrow savedBorrow = borrowRepository.save(borrow);
+        return borrowMapper.toResponse(savedBorrow);
     }
 
-    public List<Borrow> getAllBorrows() {
-        return borrowRepository.findAll();
+    public List<BorrowResponse> getAllBorrows() {
+        return borrowRepository.findAllWithUserAndBook()
+                .stream()
+                .map(borrowMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public Borrow getBorrowById(Long id) {
-        return borrowRepository.findById(id)
+    public BorrowResponse getBorrowById(Long id) {
+        Borrow borrow = getBorrowEntityById(id);
+        return borrowMapper.toResponse(borrow);
+    }
+    
+    private Borrow getBorrowEntityById(Long id) {
+        return borrowRepository.findByIdWithUserAndBook(id)
             .orElseThrow(() -> new NotFoundException("Borrow record not found with id: " + id));
     }
 
-    public List<Borrow> getBorrowsByUserId(Long userId) {
-        return borrowRepository.findByUserId(userId);
+    public List<BorrowResponse> getBorrowsByUserId(Long userId) {
+        return borrowRepository.findByUserIdWithUserAndBook(userId)
+                .stream()
+                .map(borrowMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public List<Borrow> getBorrowsByBookId(Long bookId) {
-        return borrowRepository.findByBookId(bookId);
+    public List<BorrowResponse> getBorrowsByBookId(Long bookId) {
+        return borrowRepository.findByBookIdWithUserAndBook(bookId)
+                .stream()
+                .map(borrowMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public List<Borrow> getBorrowsByStatus(BorrowStatus status) {
-        return borrowRepository.findByStatus(status);
+    public List<BorrowResponse> getBorrowsByStatus(BorrowStatus status) {
+        return borrowRepository.findByStatusWithUserAndBook(status)
+                .stream()
+                .map(borrowMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public List<Borrow> getActiveBorrowsByUserId(Long userId) {
-        return borrowRepository.findByUserIdAndStatus(userId, BorrowStatus.ACTIVE);
+    public List<BorrowResponse> getActiveBorrowsByUserId(Long userId) {
+        return borrowRepository.findByUserIdAndStatusWithUserAndBook(userId, BorrowStatus.ACTIVE)
+                .stream()
+                .map(borrowMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public List<Borrow> getOverdueBorrows() {
-        List<Borrow> overdueBorrows = borrowRepository.findOverdueBorrows(LocalDateTime.now());
+    public List<BorrowResponse> getOverdueBorrows() {
+        List<Borrow> overdueBorrows = borrowRepository.findOverdueBorrowsWithUserAndBook(LocalDateTime.now());
         // Update status to OVERDUE
         for (Borrow borrow : overdueBorrows) {
             if (borrow.getStatus() == BorrowStatus.ACTIVE) {
@@ -112,11 +142,13 @@ public class BorrowService {
                 borrowRepository.save(borrow);
             }
         }
-        return overdueBorrows;
+        return overdueBorrows.stream()
+                .map(borrowMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     public void deleteBorrow(Long id) {
-        Borrow borrow = getBorrowById(id);
+        Borrow borrow = getBorrowEntityById(id);
         
         // If deleting an active borrow, restore book availability
         if (borrow.getStatus() == BorrowStatus.ACTIVE) {

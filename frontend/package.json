@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@nuxt/icon": "^2.0.0",
     "@nuxt/image": "^1.11.0",
     "@pinia/nuxt": "^0.11.2",

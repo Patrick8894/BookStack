@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bookstack.bookstack.auth.annotation.RequireRole;
 import com.bookstack.bookstack.auth.service.JwtService;
 import com.bookstack.bookstack.borrow.dto.BorrowRequest;
+import com.bookstack.bookstack.borrow.dto.BorrowResponse;
 import com.bookstack.bookstack.borrow.dto.ReturnRequest;
-import com.bookstack.bookstack.borrow.model.Borrow;
 import com.bookstack.bookstack.borrow.model.BorrowStatus;
 import com.bookstack.bookstack.borrow.service.BorrowService;
 import com.bookstack.bookstack.common.exception.ForbiddenException;
@@ -39,35 +39,35 @@ public class BorrowController {
 
     @PostMapping
     @RequireRole({"LIBRARIAN", "ADMIN"})
-    public ResponseEntity<Borrow> borrowBook(@Valid @RequestBody BorrowRequest request) {
-        Borrow borrow = borrowService.borrowBook(request.getUserId(), request.getBookId(), request.getNotes());
+    public ResponseEntity<BorrowResponse> borrowBook(@Valid @RequestBody BorrowRequest request) {
+        BorrowResponse borrow = borrowService.borrowBook(request.getUserId(), request.getBookId(), request.getNotes());
         return ResponseEntity.status(HttpStatus.CREATED).body(borrow);
     }
 
     @PutMapping("/{id}/return")
     @RequireRole({"LIBRARIAN", "ADMIN"})
-    public ResponseEntity<Borrow> returnBook(@PathVariable Long id, @RequestBody ReturnRequest request) {
-        Borrow borrow = borrowService.returnBook(id, request.getNotes());
+    public ResponseEntity<BorrowResponse> returnBook(@PathVariable Long id, @RequestBody ReturnRequest request) {
+        BorrowResponse borrow = borrowService.returnBook(id, request.getNotes());
         return ResponseEntity.ok(borrow);
     }
 
     @GetMapping
     @RequireRole({"ADMIN"})
-    public ResponseEntity<List<Borrow>> getAllBorrows() {
-        List<Borrow> borrows = borrowService.getAllBorrows();
+    public ResponseEntity<List<BorrowResponse>> getAllBorrows() {
+        List<BorrowResponse> borrows = borrowService.getAllBorrows();
         return ResponseEntity.ok(borrows);
     }
 
     @GetMapping("/{id}")
     @RequireRole({"LIBRARIAN", "ADMIN"})
-    public ResponseEntity<Borrow> getBorrowById(@PathVariable Long id) {
-        Borrow borrow = borrowService.getBorrowById(id);
+    public ResponseEntity<BorrowResponse> getBorrowById(@PathVariable Long id) {
+        BorrowResponse borrow = borrowService.getBorrowById(id);
         return ResponseEntity.ok(borrow);
     }
 
     @GetMapping("/user/{userId}")
     @RequireRole({"LIBRARIAN", "ADMIN", "MEMBER"})
-    public ResponseEntity<List<Borrow>> getBorrowsByUser(
+    public ResponseEntity<List<BorrowResponse>> getBorrowsByUser(
             @PathVariable Long userId,
             HttpServletRequest request) {
         
@@ -81,13 +81,13 @@ public class BorrowController {
             throw new ForbiddenException("Members can only access their own borrow records");
         }
         
-        List<Borrow> borrows = borrowService.getBorrowsByUserId(userId);
+        List<BorrowResponse> borrows = borrowService.getBorrowsByUserId(userId);
         return ResponseEntity.ok(borrows);
     }
 
     @GetMapping("/user/{userId}/active")
     @RequireRole({"LIBRARIAN", "ADMIN", "MEMBER"})
-    public ResponseEntity<List<Borrow>> getActiveBorrowsByUser(
+    public ResponseEntity<List<BorrowResponse>> getActiveBorrowsByUser(
             @PathVariable Long userId,
             HttpServletRequest request) {
         
@@ -101,28 +101,28 @@ public class BorrowController {
             throw new ForbiddenException("Members can only access their own borrow records");
         }
         
-        List<Borrow> borrows = borrowService.getActiveBorrowsByUserId(userId);
+        List<BorrowResponse> borrows = borrowService.getActiveBorrowsByUserId(userId);
         return ResponseEntity.ok(borrows);
     }
 
     @GetMapping("/book/{bookId}")
     @RequireRole({"LIBRARIAN", "ADMIN"})
-    public ResponseEntity<List<Borrow>> getBorrowsByBook(@PathVariable Long bookId) {
-        List<Borrow> borrows = borrowService.getBorrowsByBookId(bookId);
+    public ResponseEntity<List<BorrowResponse>> getBorrowsByBook(@PathVariable Long bookId) {
+        List<BorrowResponse> borrows = borrowService.getBorrowsByBookId(bookId);
         return ResponseEntity.ok(borrows);
     }
 
     @GetMapping("/status")
     @RequireRole({"LIBRARIAN", "ADMIN"})
-    public ResponseEntity<List<Borrow>> getBorrowsByStatus(@RequestParam BorrowStatus status) {
-        List<Borrow> borrows = borrowService.getBorrowsByStatus(status);
+    public ResponseEntity<List<BorrowResponse>> getBorrowsByStatus(@RequestParam BorrowStatus status) {
+        List<BorrowResponse> borrows = borrowService.getBorrowsByStatus(status);
         return ResponseEntity.ok(borrows);
     }
 
     @GetMapping("/overdue")
     @RequireRole({"LIBRARIAN", "ADMIN"})
-    public ResponseEntity<List<Borrow>> getOverdueBorrows() {
-        List<Borrow> borrows = borrowService.getOverdueBorrows();
+    public ResponseEntity<List<BorrowResponse>> getOverdueBorrows() {
+        List<BorrowResponse> borrows = borrowService.getOverdueBorrows();
         return ResponseEntity.ok(borrows);
     }
 

@@ -22,7 +22,9 @@ public class AuthService {
     }
 
     public User register(String username, String password) {
-        return userService.createUser(username, password, "MEMBER");
+        User user = userService.createUser(username, password, "MEMBER");
+        System.out.println("User password (hashed): " + user.getPassword());
+        return user;
     }
 
     public LoginResponse login(String username, String password) {
