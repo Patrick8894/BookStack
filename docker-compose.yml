@@ -40,9 +40,53 @@ services:
     networks:
       - bookstack-network
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: bookstack-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - bookstack-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: bookstack-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - bookstack-network
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: bookstack-postgres-exporter
+    ports:
+      - "9187:9187"
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:password@db:5432/bookstack?sslmode=disable
+    depends_on:
+      - db
+    networks:
+      - bookstack-network
+
 networks:
   bookstack-network:
     driver: bridge
 
 volumes:
-  postgres_data:
+  postgres_data_dev:
+  prometheus_data:
+  grafana_data:
