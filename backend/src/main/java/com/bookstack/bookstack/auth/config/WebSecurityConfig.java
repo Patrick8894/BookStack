@@ -22,9 +22,7 @@ public class WebSecurityConfig {
                     "/hello",
                     "/swagger-ui/**", 
                     "/swagger-ui.html", 
-                    "/v3/api-docs/**",
-                    "/graphql/**",
-                    "/graphiql/**"
+                    "/v3/api-docs/**"
                 ).permitAll()
                 // All other endpoints will be handled by @RequireRole annotation
                 .anyRequest().permitAll()

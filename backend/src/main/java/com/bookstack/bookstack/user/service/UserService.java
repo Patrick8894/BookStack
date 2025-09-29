@@ -53,6 +53,10 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public List<User> searchUsersByUsername(String username) {
+        return userRepository.findByUsernameContainingIgnoreCase(username);
+    }
+
     public List<User> getUsersByRole(String role) {
         String validatedRole = validateRole(role);
         return userRepository.findByRole(validatedRole);

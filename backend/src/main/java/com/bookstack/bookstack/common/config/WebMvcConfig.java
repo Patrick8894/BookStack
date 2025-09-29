@@ -1,23 +1,22 @@
 package com.bookstack.bookstack.common.config;
 
-import com.bookstack.bookstack.common.interceptor.RateLimitInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.bookstack.bookstack.common.RateLimitInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.lang.NonNull;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final RateLimitInterceptor rateLimitInterceptor;
 
-    @Autowired
     public WebMvcConfig(RateLimitInterceptor rateLimitInterceptor) {
         this.rateLimitInterceptor = rateLimitInterceptor;
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(@NonNull InterceptorRegistry registry) {
         registry.addInterceptor(rateLimitInterceptor)
                 .addPathPatterns("/**")  // Apply to all endpoints
                 .excludePathPatterns(

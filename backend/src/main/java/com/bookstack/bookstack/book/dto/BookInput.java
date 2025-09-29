@@ -27,5 +27,4 @@ public class BookInput {
     @Min(value = 0, message = "Available copies must be at least 0")
     private Integer availableCopies;
     
-    // getters and setters
 }

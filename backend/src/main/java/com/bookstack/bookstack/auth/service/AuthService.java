@@ -7,6 +7,7 @@ import com.bookstack.bookstack.common.exception.BadRequestException;
 import com.bookstack.bookstack.common.exception.NotFoundException;
 import com.bookstack.bookstack.user.model.User;
 import com.bookstack.bookstack.user.service.UserService;
+import com.bookstack.bookstack.auth.dto.LoginResponse;
 
 @Service
 public class AuthService {
@@ -24,12 +25,16 @@ public class AuthService {
         return userService.createUser(username, password, "MEMBER");
     }
 
-    public String login(String username, String password) {
+    public LoginResponse login(String username, String password) {
         User user = userService.getUserByUsername(username)
             .orElseThrow(() -> new NotFoundException("User not found"));
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadRequestException("Invalid credentials");
         }
-        return jwtService.generateToken(user);
+        
+        String token = jwtService.generateToken(user);
+        LoginResponse.UserDto userDto = new LoginResponse.UserDto(user);
+        
+        return new LoginResponse(token, userDto);
     }
 }

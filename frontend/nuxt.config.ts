@@ -19,6 +19,7 @@ export default defineNuxtConfig({
       config.plugins.push(vuetify())
     },
   },
+  ssr: false,
   runtimeConfig: {
     // Private keys (server only)
     

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bookstack.bookstack.auth.dto.AuthResponse;
 import com.bookstack.bookstack.auth.dto.LoginRequest;
+import com.bookstack.bookstack.auth.dto.LoginResponse;
 import com.bookstack.bookstack.auth.dto.RegisterRequest;
 import com.bookstack.bookstack.auth.service.AuthService;
 
@@ -33,8 +33,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        String token = authService.login(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok(new AuthResponse(token));
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = authService.login(request.getUsername(), request.getPassword());
+        return ResponseEntity.ok(response);
     }
 }

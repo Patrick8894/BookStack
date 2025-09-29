@@ -21,7 +21,6 @@ public class UserGraphQLController {
         this.userService = userService;
     }
 
-    // Queries - Admin can see all users, librarians can see users, members can only see themselves
     @QueryMapping
     @RequireRole({"ADMIN"})
     public List<User> allUsers() {
@@ -29,15 +28,21 @@ public class UserGraphQLController {
     }
 
     @QueryMapping
-    @RequireRole({"ADMIN", "LIBRARIAN"})
+    @RequireRole({"ADMIN"})
     public User userById(@Argument Long id) {
         return userService.getUserById(id);
     }
 
     @QueryMapping
-    @RequireRole({"ADMIN", "LIBRARIAN"})
+    @RequireRole({"ADMIN"})
     public User userByUsername(@Argument String username) {
         return userService.getUserByUsername(username).orElse(null);
+    }
+
+    @QueryMapping
+    @RequireRole({"ADMIN"})
+    public List<User> searchUsersByUsername(@Argument String username) {
+        return userService.searchUsersByUsername(username);
     }
 
     @QueryMapping
@@ -46,7 +51,6 @@ public class UserGraphQLController {
         return userService.getUsersByRole(role);
     }
 
-    // Mutations - Only admins can manage users
     @MutationMapping
     @RequireRole({"ADMIN"})
     public User addUser(@Argument @Valid UserInput input) {
