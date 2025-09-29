@@ -7,7 +7,10 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - .env.prod
+      - ./backend/env/.env.prod
+    environment:
+      # Override database URL for Docker
+      - DB_URL=jdbc:postgresql://db:5432/bookstack
     depends_on:
       - db
     networks:
@@ -19,7 +22,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NUXT_PUBLIC_API_URL=http://backend:8080/api
+      - NUXT_PUBLIC_API_URL=http://localhost:8080/api
     depends_on:
       - backend
     networks:
@@ -30,10 +33,8 @@ services:
     container_name: bookstack-db
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_DB=bookstack
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - ./backend/env/.env.prod
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

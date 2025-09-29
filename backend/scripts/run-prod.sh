@@ -2,8 +2,8 @@
 echo "🚀 Starting BookStack in PRODUCTION mode..."
 echo "✅ This will PRESERVE existing data"
 
-# Load production environment
-export $(cat ./env/.env.prod | xargs)
+# Load development environment (skip comments and empty lines)
+export $(grep -v '^#' ./env/.env.dev | grep -v '^$' | xargs)
 
 # Run the application
 ./mvnw spring-boot:run
