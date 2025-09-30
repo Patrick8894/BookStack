@@ -124,13 +124,14 @@ services:
       - bookstack-network
 
   fluentd:
-    image: fluent/fluentd-kubernetes-daemonset:v1.16.2-debian-elasticsearch7-1.0
+    build: ./monitoring/fluentd
     container_name: bookstack-fluentd
     ports:
       - "24224:24224"
       - "24224:24224/udp"
     volumes:
       - ./monitoring/fluentd/fluent.conf:/fluentd/etc/fluent.conf
+      - ./monitoring/fluentd/log:/fluentd/log
     depends_on:
       - elasticsearch
     networks:
