@@ -6,20 +6,25 @@ services:
     container_name: bookstack-backend-dev
     ports:
       - "8080:8080"
-      - "35729:35729"  # For LiveReload
+      - "35729:35729"
     volumes:
       - ./backend:/app
       - ~/.m2:/root/.m2
     env_file:
       - ./backend/env/.env.dev
     environment:
-      # Override database URL for Docker
       - DB_URL=jdbc:postgresql://db:5432/bookstack
-      # Enable actuator endpoints for metrics
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics,prometheus
-      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: fluentd:24224
+        tag: bookstack.backend
+        fluentd-async: "true"
+        fluentd-retry-wait: "1s"
+        fluentd-max-retries: "30"
     depends_on:
       - db
+      - fluentd
     networks:
       - bookstack-network
 
@@ -91,6 +96,7 @@ services:
       - db
     networks:
       - bookstack-network
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     container_name: bookstack-elasticsearch
@@ -117,14 +123,14 @@ services:
     networks:
       - bookstack-network
 
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:8.11.0
-    container_name: bookstack-filebeat
-    user: root
+  fluentd:
+    image: fluent/fluentd-kubernetes-daemonset:v1.16.2-debian-elasticsearch7-1.0
+    container_name: bookstack-fluentd
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
     volumes:
-      - ./monitoring/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:rw
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./monitoring/fluentd/fluent.conf:/fluentd/etc/fluent.conf
     depends_on:
       - elasticsearch
     networks:
