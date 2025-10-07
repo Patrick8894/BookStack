@@ -13,6 +13,11 @@ export default defineNuxtRouteMiddleware((to) => {
   if (process.client && !auth.token) {
     auth.loadFromStorage();
   }
+
+  if (auth.token && (to.path === '/login' || to.path === '/register')) {
+    console.log("Already logged in, redirecting to /");
+    return navigateTo('/');
+  }
   
   if (!auth.token && to.path !== '/' && to.path !== '/login' && to.path !== '/register') {
     console.log("Find no token, redirecting to login");

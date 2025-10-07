@@ -95,7 +95,11 @@ function getFieldErrors(fieldName: string): string[] {
 
 function resetForm() {
   if (props.initialData) {
-    form.value = { ...props.initialData, notes: props.initialData.notes || '' };
+    form.value = { 
+      userId: props.initialData.userId || '',
+      bookId: props.initialData.bookId || '',
+      notes: props.initialData.notes || '' 
+    };
   } else {
     form.value = {
       userId: '',
