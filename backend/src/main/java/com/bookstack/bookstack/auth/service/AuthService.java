@@ -21,10 +21,9 @@ public class AuthService {
         this.userService = userService;
     }
 
-    public User register(String username, String password) {
-        User user = userService.createUser(username, password, "MEMBER");
-        System.out.println("User password (hashed): " + user.getPassword());
-        return user;
+    public Void register(String username, String password) {
+        userService.createUser(username, password, "MEMBER");
+        return null;
     }
 
     public LoginResponse login(String username, String password) {

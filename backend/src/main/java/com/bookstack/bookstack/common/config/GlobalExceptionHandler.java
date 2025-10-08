@@ -75,7 +75,6 @@ public class GlobalExceptionHandler {
     // Fallback for unhandled errors
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
-        System.err.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         System.err.println("Unhandled exception: " + ex.getClass().getName() + " - " + ex.getMessage());
         ex.printStackTrace(); // Add stack trace for better debugging
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
