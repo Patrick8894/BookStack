@@ -59,6 +59,11 @@
       "name":"bookstack.auth.enabled",
       "type":"java.lang.Boolean",
       "description":"Enable or disable authentication"
+    },
+    {
+      "name":"load.mock.data",
+      "type":"java.lang.Boolean",
+      "description":"Load mock data on startup"
     }
   ]
 }

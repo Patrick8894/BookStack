@@ -1,0 +1,161 @@
+# .github/workflows/ci.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: bookstack_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: test_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Run backend tests
+      working-directory: ./backend
+      env:
+        # Test database configuration
+        DB_URL: jdbc:postgresql://localhost:5432/bookstack_test
+        DB_USERNAME: postgres
+        DB_PASSWORD: test_password
+        
+        # JWT configuration for tests
+        JWT_SECRET: QWERTYUIOPASDFGHJKLZXCVBNM1234567890ouhnqlncfqincw
+        JWT_EXPIRATION: 86400000
+        
+        # Test profile
+        SPRING_PROFILES_ACTIVE: test
+      run: |
+        chmod +x mvnw
+        ./mvnw clean test
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: backend-test-results
+        path: backend/target/surefire-reports/
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+
+    - name: Install frontend dependencies
+      working-directory: ./frontend
+      run: npm ci
+
+    - name: Run frontend linting
+      working-directory: ./frontend
+      run: npm run lint || true
+
+    - name: Run frontend tests (if you have them)
+      working-directory: ./frontend
+      run: |
+        # Add this when you have frontend tests
+        # npm run test
+        echo "Frontend tests placeholder"
+
+    - name: Build frontend
+      working-directory: ./frontend
+      run: npm run build
+
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [backend-tests]
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: bookstack_e2e
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: test_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Run E2E tests
+      working-directory: ./backend
+      env:
+        DB_URL: jdbc:postgresql://localhost:5432/bookstack_e2e
+        DB_USERNAME: postgres
+        DB_PASSWORD: test_password
+        JWT_SECRET: QWERTYUIOPASDFGHJKLZXCVBNM1234567890ouhnqlncfqincw
+        JWT_EXPIRATION: 86400000
+        SPRING_PROFILES_ACTIVE: test
+      run: |
+        chmod +x mvnw
+        ./mvnw test -Dtest="**/*E2ETest"
+
+    - name: Upload E2E test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-test-results
+        path: backend/target/surefire-reports/

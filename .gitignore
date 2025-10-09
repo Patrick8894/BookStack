@@ -1,1 +1,7 @@
 .vscode
+.secrets
+node_modules/
+target/
+*.log
+.env*
+act
