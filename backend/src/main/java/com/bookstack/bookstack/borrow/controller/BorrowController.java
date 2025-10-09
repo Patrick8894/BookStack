@@ -52,7 +52,7 @@ public class BorrowController {
     }
 
     @GetMapping
-    @RequireRole({"ADMIN"})
+    @RequireRole({"LIBRARIAN", "ADMIN"})
     public ResponseEntity<List<BorrowResponse>> getAllBorrows() {
         List<BorrowResponse> borrows = borrowService.getAllBorrows();
         return ResponseEntity.ok(borrows);

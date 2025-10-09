@@ -22,7 +22,7 @@ public class UserGraphQLController {
     }
 
     @QueryMapping
-    @RequireRole({"ADMIN"})
+    @RequireRole({"ADMIN", "LIBRARIAN"})
     public List<User> allUsers() {
         return userService.getAllUsers();
     }
@@ -40,7 +40,7 @@ public class UserGraphQLController {
     }
 
     @QueryMapping
-    @RequireRole({"ADMIN"})
+    @RequireRole({"ADMIN", "LIBRARIAN"})
     public User userById(@Argument Long id) {
         return userService.getUserById(id);
     }
@@ -52,19 +52,19 @@ public class UserGraphQLController {
     }
 
     @QueryMapping
-    @RequireRole({"ADMIN"})
+    @RequireRole({"ADMIN", "LIBRARIAN"})
     public User userByUsername(@Argument String username) {
         return userService.getUserByUsername(username).orElse(null);
     }
 
     @QueryMapping
-    @RequireRole({"ADMIN"})
+    @RequireRole({"ADMIN", "LIBRARIAN"})
     public List<User> searchUsersByUsername(@Argument String username) {
         return userService.searchUsersByUsername(username);
     }
 
     @QueryMapping
-    @RequireRole({"ADMIN"})
+    @RequireRole({"ADMIN", "LIBRARIAN"})
     public List<User> usersByRole(@Argument String role) {
         return userService.getUsersByRole(role);
     }

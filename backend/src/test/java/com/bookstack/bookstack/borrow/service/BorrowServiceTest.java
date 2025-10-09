@@ -9,6 +9,7 @@ import com.bookstack.bookstack.borrow.model.BorrowStatus;
 import com.bookstack.bookstack.borrow.repository.BorrowRepository;
 import com.bookstack.bookstack.common.exception.BadRequestException;
 import com.bookstack.bookstack.common.exception.NotFoundException;
+import com.bookstack.bookstack.common.lock.GlobalBorrowLock;
 import com.bookstack.bookstack.user.model.User;
 import com.bookstack.bookstack.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -28,8 +30,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.mockito.quality.Strictness.LENIENT;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = LENIENT)
 class BorrowServiceTest {
 
     @Mock
@@ -44,6 +48,9 @@ class BorrowServiceTest {
     @Mock
     private BorrowMapper borrowMapper;
 
+    @Mock
+    private GlobalBorrowLock globalLock; 
+
     @InjectMocks
     private BorrowService borrowService;
 
@@ -55,7 +62,11 @@ class BorrowServiceTest {
     private List<Borrow> borrowList;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws InterruptedException {
+        // Configure GlobalBorrowLock mock to always succeed
+        when(globalLock.tryLock(5000L)).thenReturn(true); // Match the exact value from service
+        doNothing().when(globalLock).unlock();
+
         validUser = new User();
         validUser.setId(1L);
         validUser.setUsername("john_doe");

@@ -54,6 +54,11 @@
       "name": "spring.web.cors.max-age",
       "type": "java.lang.Long",
       "description": "Custom CORS max age configuration"
+    },
+    {
+      "name":"bookstack.auth.enabled",
+      "type":"java.lang.Boolean",
+      "description":"Enable or disable authentication"
     }
   ]
 }

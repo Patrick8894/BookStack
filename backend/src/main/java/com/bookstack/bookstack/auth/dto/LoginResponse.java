@@ -26,5 +26,8 @@ public class LoginResponse {
             this.username = user.getUsername();
             this.role = user.getRole();
         }
+
+        public UserDto() {
+        }
     }
 }
