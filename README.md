@@ -246,37 +246,6 @@ npm run preview                 # Preview production build
 
 ---
 
-## 🏆 Key Features & Highlights
-
-### **🔒 Security First**
-- JWT-based stateless authentication
-- Method-level authorization with AspectJ
-- Rate limiting and DDoS protection
-- SQL injection prevention with parameterized queries
-- XSS protection with content security policies
-
-### **⚡ Performance Optimized**
-- GraphQL for efficient data fetching
-- Database query optimization with JPA
-- Caching with Caffeine for rate limiting
-- Connection pooling and transaction management
-- Optimistic locking for concurrent operations
-
-### **📈 Production Ready**
-- Comprehensive monitoring and alerting
-- Structured logging with correlation IDs
-- Health checks and graceful shutdown
-- Multi-environment configuration management
-
-### **🧪 Quality Assured**
-- 85%+ test coverage across all layers
-- Automated CI/CD pipeline with GitHub Actions
-- E2E testing of critical user workflows
-- Security testing and vulnerability scanning
-- Performance testing and load validation
-
----
-
 ## 📞 Support
 
 - **Issues**: [GitHub Issues](https://github.com/Patrick8894/bookstack/issues)
