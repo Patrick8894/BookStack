@@ -249,7 +249,11 @@ function getRoleDescription(role: string): string {
 
 <style scoped>
 .hero-section {
-  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%), 
+              url('/library.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   min-height: 60vh;
   display: flex;
   align-items: center;

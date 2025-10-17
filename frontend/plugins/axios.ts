@@ -10,7 +10,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   });
 
   // Only run in browser environment
-  if (process.client) {
+  if (import.meta.client) {
     api.interceptors.request.use((config) => {
       const token = localStorage.getItem('token');
       if (token && config.url && !config.url.includes('/auth/')) {

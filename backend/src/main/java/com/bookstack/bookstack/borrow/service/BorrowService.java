@@ -175,15 +175,27 @@ public class BorrowService {
     }
 
     public void deleteBorrow(Long id) {
-        Borrow borrow = getBorrowEntityById(id);
-        
-        // If deleting an active borrow, restore book availability
-        if (borrow.getStatus() == BorrowStatus.ACTIVE) {
-            Book book = borrow.getBook();
-            book.setAvailableCopies(book.getAvailableCopies() + 1);
-            bookService.updateBook(book.getId(), book);
+        try {
+            if (!globalLock.tryLock(5000)) {   // 5s timeout to avoid hangs
+                System.out.println("Global lock is busy");
+                throw new ConflictException("System is busy. Please try again.");
+            }
+
+            Borrow borrow = getBorrowEntityById(id);
+            
+            // If deleting an active borrow, restore book availability
+            if (borrow.getStatus() == BorrowStatus.ACTIVE) {
+                Book book = borrow.getBook();
+                book.setAvailableCopies(book.getAvailableCopies() + 1);
+                bookService.updateBook(book.getId(), book);
+            }
+            
+            borrowRepository.deleteById(id);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new ConflictException("System is busy. Please try again.");
+        } finally {
+            globalLock.unlock();
         }
-        
-        borrowRepository.deleteById(id);
     }
 }

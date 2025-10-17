@@ -198,7 +198,7 @@ async function handleSave(formData: Omit<Book, 'id'>) {
   successMessage.value = '';
   
   // Validate the book data
-  const errors = validateBook(formData, true); // true = isUpdate
+  const errors = validateBook(formData); // true = isUpdate
   
   if (errors.length > 0) {
     validationErrors.value = errors;

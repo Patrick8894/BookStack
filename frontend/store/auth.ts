@@ -26,8 +26,8 @@ export const useAuthStore = defineStore('auth', {
       this.token = data.token;
       this.user = data.user;
       this.isLoaded = true;
-      
-      if (process.client) {
+
+      if (import.meta.client) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
       }
@@ -42,14 +42,14 @@ export const useAuthStore = defineStore('auth', {
       this.user = null;
       this.isLoaded = true;
       
-      if (process.client) {
+      if (import.meta.client) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       }
     },
 
     loadFromStorage() {
-      if (process.client && !this.isLoaded) {
+      if (import.meta.client && !this.isLoaded) {
         const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');
         

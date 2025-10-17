@@ -14,7 +14,7 @@ export interface BookValidationData {
   availableCopies: number | string;
 }
 
-export function validateBook(bookData: BookValidationData, isUpdate = false): BookValidationError[] {
+export function validateBook(bookData: BookValidationData): BookValidationError[] {
   const errors: BookValidationError[] = [];
 
   // Title validation

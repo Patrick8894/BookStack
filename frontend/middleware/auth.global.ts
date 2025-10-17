@@ -3,14 +3,14 @@ import { defineNuxtRouteMiddleware, navigateTo } from '#app';
 
 export default defineNuxtRouteMiddleware((to) => {
   // Skip authentication check during SSR to avoid hydration mismatch
-  if (process.server) {
+  if (import.meta.server) {
     return;
   }
   
   const auth = useAuthStore();
   
   // Initialize auth store from localStorage on client side
-  if (process.client && !auth.token) {
+  if (import.meta.client && !auth.token) {
     auth.loadFromStorage();
   }
 

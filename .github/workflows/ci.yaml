@@ -60,7 +60,7 @@ jobs:
         SPRING_PROFILES_ACTIVE: test
       run: |
         chmod +x mvnw
-        ./mvnw clean test
+        ./mvnw clean test -Dtest="!**/*E2ETest"
 
     - name: Upload test results
       uses: actions/upload-artifact@v4

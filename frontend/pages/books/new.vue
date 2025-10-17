@@ -64,7 +64,7 @@ async function handleSave(formData: any) {
   error.value = '';
   
   // Validate the book data
-  const errors = validateBook(formData, false); // false = isCreate
+  const errors = validateBook(formData); // false = isCreate
   
   if (errors.length > 0) {
     validationErrors.value = errors;
