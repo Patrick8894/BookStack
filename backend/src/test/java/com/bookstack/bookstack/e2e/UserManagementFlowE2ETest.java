@@ -509,17 +509,17 @@ class UserManagementFlowE2ETest {
     }
 
     private Long extractUserIdFromGraphQLResponse(String responseBody) throws Exception {
-    // Simple JSON parsing to extract user ID
-    // The response format is: {"data":{"addUser":{"id":"11","username":"...","role":"..."}}}
-    if (responseBody.contains("addUser")) {
-        // Extract ID from addUser response - ID is wrapped in quotes
-        String idPattern = "\"id\":\\s*\"(\\d+)\"";  // Changed to capture quoted number
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(idPattern);
-        java.util.regex.Matcher matcher = pattern.matcher(responseBody);
-        if (matcher.find()) {
-            return Long.parseLong(matcher.group(1));
+        // Simple JSON parsing to extract user ID
+        // The response format is: {"data":{"addUser":{"id":"11","username":"...","role":"..."}}}
+        if (responseBody.contains("addUser")) {
+            // Extract ID from addUser response - ID is wrapped in quotes
+            String idPattern = "\"id\":\\s*\"(\\d+)\"";  // Changed to capture quoted number
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(idPattern);
+            java.util.regex.Matcher matcher = pattern.matcher(responseBody);
+            if (matcher.find()) {
+                return Long.parseLong(matcher.group(1));
+            }
         }
+        throw new RuntimeException("Could not extract user ID from response: " + responseBody);
     }
-    throw new RuntimeException("Could not extract user ID from response: " + responseBody);
-}
 }
