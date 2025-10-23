@@ -6,3 +6,4 @@ export $(grep -v '^#' ./env/.env.dev | grep -v '^$' | xargs)
 
 # Run tests
 ./mvnw test
+# ./gradlew test

@@ -7,3 +7,4 @@ export $(grep -v '^#' ./env/.env.dev | grep -v '^$' | xargs)
 
 # Run the application
 ./mvnw spring-boot:run
+# ./gradlew bootRun
